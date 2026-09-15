@@ -1,0 +1,253 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Katalog produk sembako koperasi",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama produk" },
+        "emoji": { "type": "string", "description": "Emoji ikon produk" },
+        "category": { "type": "string", "description": "Kategori produk" },
+        "variations": { "type": "array", "description": "Daftar variasi ukuran" },
+        "price": { "type": "number", "description": "Harga normal produk" },
+        "isAvailable": { "type": "boolean", "description": "Status ketersediaan stok" },
+        "unitDescription": { "type": "string", "description": "Deskripsi kemasan dan satuan" },
+        "hasMemberDiscount": { "type": "boolean", "description": "Status diskon khusus anggota" },
+        "memberDiscountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "memberDiscountValue": { "type": "number", "description": "Besaran diskon anggota" },
+        "hasVisitorDiscount": { "type": "boolean", "description": "Status diskon khusus pengunjung" },
+        "visitorDiscountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "visitorDiscountValue": { "type": "number", "description": "Besaran diskon pengunjung" }
+      },
+      "required": ["name", "price"]
+    },
+    "ProductPromotion": {
+      "title": "ProductPromotion",
+      "description": "Aturan promo beli produk utama dapat produk bonus/gratis",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama promo" },
+        "buyProductId": { "type": "string", "description": "ID produk yang dibeli" },
+        "buyProductName": { "type": "string", "description": "Nama produk yang dibeli" },
+        "buyVariation": { "type": "string", "description": "Variasi atau ukuran produk yang dibeli" },
+        "minQty": { "type": "number", "description": "Jumlah minimal pembelian" },
+        "rewardProductId": { "type": "string", "description": "ID produk bonus gratis" },
+        "rewardProductName": { "type": "string", "description": "Nama produk bonus" },
+        "rewardVariation": { "type": "string", "description": "Variasi atau ukuran produk bonus" },
+        "rewardQty": { "type": "number", "description": "Jumlah bonus yang didapat" },
+        "isTiered": { "type": "boolean", "description": "Perhitungan bonus bertingkat kelipatan" },
+        "maxBonus": { "type": "number", "description": "Batas maksimal bonus" },
+        "targetAudience": { "type": "string", "enum": ["all", "member", "visitor"] },
+        "startDate": { "type": "string", "description": "Tanggal mulai promo YYYY-MM-DD" },
+        "endDate": { "type": "string", "description": "Tanggal berakhir promo YYYY-MM-DD" },
+        "isActive": { "type": "boolean", "description": "Status aktif/nonaktif promo" }
+      },
+      "required": ["name", "buyProductId", "minQty", "rewardProductId", "rewardQty", "isActive"]
+    },
+    "Voucher": {
+      "title": "Voucher",
+      "description": "Kupon diskon belanja sembako",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "discountType": { "type": "string", "enum": ["percentage", "fixed"] },
+        "discountValue": { "type": "number" },
+        "minPurchase": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["code", "discountType", "discountValue", "minPurchase", "isActive"]
+    },
+    "StockLog": {
+      "title": "StockLog",
+      "description": "Riwayat mutasi stok produk",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "variation": { "type": "string" },
+        "type": { "type": "string" },
+        "quantityChange": { "type": "number" },
+        "oldStock": { "type": "number" },
+        "newStock": { "type": "number" },
+        "notes": { "type": "string" },
+        "actor": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "productName", "variation", "createdAt"]
+    },
+    "CustomerOrder": {
+      "title": "CustomerOrder",
+      "description": "Data pesanan belanja sembako pelanggan langsung di website",
+      "type": "object",
+      "properties": {
+        "orderNumber": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerRole": { "type": "string" },
+        "grandTotal": { "type": "number" },
+        "orderStatus": { "type": "string" },
+        "paymentStatus": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["orderNumber", "customerName", "customerPhone", "grandTotal", "orderStatus", "createdAt"]
+    },
+    "PointProgram": {
+      "title": "PointProgram",
+      "description": "Aturan dan program pemberian point belanja untuk Anggota & Basic",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama program point" },
+        "targetAudience": { "type": "string", "enum": ["member", "basic"] },
+        "calculationType": { "type": "string", "enum": ["spend", "quantity"] },
+        "spendPerPoint": { "type": "number", "description": "Rupiah belanja untuk 1 point" },
+        "pointsPerUnit": { "type": "number", "description": "Jumlah point per satuan atau kelipatan" },
+        "minPurchase": { "type": "number", "description": "Minimal belanja untuk mulai dapat point" },
+        "maxPointsPerTransaction": { "type": "number", "description": "Maksimal point per transaksi" },
+        "rounding": { "type": "string", "enum": ["floor", "round", "ceil"] },
+        "productScope": { "type": "string", "enum": ["all", "specific"] },
+        "applicableProductIds": { "type": "array", "description": "Daftar ID produk yang dapat point jika spesifik" },
+        "isPromoActive": { "type": "boolean", "description": "Status promo khusus point (misal double point)" },
+        "promoMultiplier": { "type": "number", "description": "Kelipatan promo point (contoh: 2x)" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "isActive": { "type": "boolean" },
+        "terms": { "type": "string" }
+      },
+      "required": ["name", "targetAudience", "calculationType", "isActive"]
+    },
+    "PointReward": {
+      "title": "PointReward",
+      "description": "Program dan katalog penukaran point loyalitas pelanggan",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Nama hadiah penukaran point" },
+        "pointsCost": { "type": "number", "description": "Jumlah point yang dibutuhkan" },
+        "rewardType": { "type": "string", "enum": ["discount_nominal", "discount_percentage", "free_shipping", "product_gift"] },
+        "discountValue": { "type": "number" },
+        "freeShippingCap": { "type": "number" },
+        "rewardProductId": { "type": "string" },
+        "rewardProductName": { "type": "string" },
+        "rewardVariation": { "type": "string" },
+        "quota": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "targetAudience": { "type": "string", "enum": ["all", "member", "basic"] },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["name", "pointsCost", "rewardType", "isActive"]
+    },
+    "CustomerPointAccount": {
+      "title": "CustomerPointAccount",
+      "description": "Saldo dan akumulasi point loyalitas pelanggan",
+      "type": "object",
+      "properties": {
+        "customerPhone": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerRole": { "type": "string", "enum": ["member", "basic"] },
+        "memberNumber": { "type": "string" },
+        "totalEarned": { "type": "number" },
+        "totalRedeemed": { "type": "number" },
+        "totalDeducted": { "type": "number" },
+        "balance": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["customerPhone", "customerRole", "balance"]
+    },
+    "PointTransaction": {
+      "title": "PointTransaction",
+      "description": "Riwayat mutasi penambahan, penggunaan, dan pemotongan point",
+      "type": "object",
+      "properties": {
+        "accountId": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerRole": { "type": "string" },
+        "type": { "type": "string", "enum": ["earn", "redeem", "deduct", "adjust"] },
+        "points": { "type": "number" },
+        "balanceAfter": { "type": "number" },
+        "orderNumber": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["accountId", "type", "points", "balanceAfter", "createdAt"]
+    },
+    "AnalyticsEvent": {
+      "title": "AnalyticsEvent",
+      "description": "Log aktivitas analitik pengguna Basic dan Anggota",
+      "type": "object",
+      "properties": {
+        "sessionId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userRole": { "type": "string", "enum": ["basic", "anggota"] },
+        "eventType": { "type": "string", "enum": ["page_view", "catalog_view", "cart_view", "product_click", "add_to_cart", "whatsapp_click"] },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "variation": { "type": "string" },
+        "quantity": { "type": "number" },
+        "cartTotal": { "type": "number" },
+        "cartItemsCount": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["sessionId", "userRole", "eventType", "createdAt", "timestamp"]
+    },
+    "SavedProduct": {
+      "title": "SavedProduct",
+      "description": "Produk yang disimpan (Wishlist) oleh Anggota",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "variation": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "productId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Data produk sembako dan pengaturan diskon anggota & pengunjung"
+    },
+    "/promotions/{promoId}": {
+      "schema": "ProductPromotion",
+      "description": "Data aturan promo gratis / bonus produk otomatis"
+    },
+    "/vouchers/{voucherId}": {
+      "schema": "Voucher",
+      "description": "Daftar voucher diskon kupon"
+    },
+    "/stockLogs/{logId}": {
+      "schema": "StockLog",
+      "description": "Riwayat dan audit log mutasi stok produk"
+    },
+    "/orders/{orderId}": {
+      "schema": "CustomerOrder",
+      "description": "Daftar transaksi pesanan pelanggan dan riwayat status pengiriman"
+    },
+    "/pointPrograms/{programId}": {
+      "schema": "PointProgram",
+      "description": "Konfigurasi aturan program point belanja untuk Anggota dan Basic"
+    },
+    "/pointRewards/{rewardId}": {
+      "schema": "PointReward",
+      "description": "Katalog hadiah penukaran point belanja"
+    },
+    "/pointAccounts/{accountId}": {
+      "schema": "CustomerPointAccount",
+      "description": "Saldo dan ringkasan point pelanggan Anggota dan Basic"
+    },
+    "pointTransactions/{transactionId}": {
+      "schema": "PointTransaction",
+      "description": "Riwayat transaksi mutasi point masuk, keluar, dan penyesuaian"
+    },
+    "analyticsEvents/{eventId}": {
+      "schema": "AnalyticsEvent",
+      "description": "Log aktivitas analitik untuk admin dashboard"
+    },
+    "savedProducts/{savedId}": {
+      "schema": "SavedProduct",
+      "description": "Produk yang disimpan oleh Anggota"
+    }
+  }
+}

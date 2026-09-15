@@ -1,0 +1,8 @@
+{
+  "name": "Koperasi Merah Putih - Gerai Sembako Cengkareng Timur",
+  "description": "Aplikasi Koperasi Sembako terintegrasi Firebase Auth, Firestore real-time produk & voucher, sistem Buat Pesanan langsung di website, riwayat transaksi, dan kotak pesan real-time.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
